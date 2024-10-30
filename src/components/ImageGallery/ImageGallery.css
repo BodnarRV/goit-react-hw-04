@@ -1,0 +1,13 @@
+.images-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  list-style: none;
+  padding: 25px;
+  margin: 0;
+}
+
+.image-item {
+  flex: 0 1 calc(25% - 16px);
+  overflow: hidden;
+}

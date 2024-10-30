@@ -1,0 +1,22 @@
+.btn-container {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.loadMore-btn {
+  border: none;
+  width: 100px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: rgb(103, 103, 231);
+  color: #fff;
+  font-size: 16px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.5s ease-in-out;
+}
+
+.loadMore-btn:hover {
+  background-color: rgb(0, 0, 166);
+}

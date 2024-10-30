@@ -1,0 +1,28 @@
+.header {
+  background-color: #3d1896;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.search-form {
+  position: relative;
+  margin: 0 auto;
+}
+
+.search-input {
+  padding: 8px 8px 8px 40px;
+  width: 450px;
+}
+
+.search-btn {
+  border: none;
+  position: absolute;
+  left: 3px;
+  top: 8%;
+  background-color: #fff;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
