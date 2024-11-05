@@ -1,7 +1,7 @@
-import { useState } from "react";
-import axios from "axios";
-import "./App.css";
+import { useState, useEffect } from "react";
+import { fetchImages } from "./api";
 import { DNA } from "react-loader-spinner";
+import "./App.css";
 
 // Components
 import SearchBar from "./components/SearchBar/SearchBar";
@@ -18,62 +18,39 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
   const imagesPerPage = 12;
 
-  const handleSearch = async (e) => {
+  useEffect(() => {
+    if (!query) return;
+
+    const getImages = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const data = await fetchImages(query, currentPage, imagesPerPage);
+        setImages((prevImages) =>
+          currentPage === 1 ? data.results : [...prevImages, ...data.results]
+        );
+        setTotalPages(data.total_pages);
+      } catch (error) {
+        setError(error.message || "Щось пішло не так!");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getImages();
+  }, [query, currentPage]);
+
+  const handleSearch = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
     setCurrentPage(1);
-
-    try {
-      const response = await axios.get(
-        "https://api.unsplash.com/search/photos",
-        {
-          headers: {
-            Authorization:
-              "Client-ID 3FImjmzjTR33XOk3M5wAd94nl6FLOhldWpXN7W2tJpM",
-          },
-          params: {
-            query: query,
-            page: currentPage,
-            per_page: imagesPerPage,
-          },
-        }
-      );
-
-      setImages(response.data.results);
-    } catch (error) {
-      setError(error.message || "Щось пішло не так!");
-    } finally {
-      setLoading(false);
-    }
   };
 
-  const loadMoreImages = async () => {
-    setError("");
+  const loadMoreImages = () => {
     setCurrentPage((prevPage) => prevPage + 1);
-
-    try {
-      const response = await axios.get(
-        "https://api.unsplash.com/search/photos",
-        {
-          headers: {
-            Authorization:
-              "Client-ID 3FImjmzjTR33XOk3M5wAd94nl6FLOhldWpXN7W2tJpM",
-          },
-          params: {
-            query: query,
-            page: currentPage + 1,
-            per_page: imagesPerPage,
-          },
-        }
-      );
-
-      setImages((prevImages) => [...prevImages, ...response.data.results]);
-    } catch (error) {
-      setError(error.message || "Щось пішло не так!");
-    }
   };
 
   const openModal = (image) => {
@@ -92,19 +69,12 @@ function App() {
       {images.length > 0 && (
         <>
           <ImageGallery images={images} onImageClick={openModal} />
-          <LoadMoreBtn onLoadMore={loadMoreImages} />
+          {currentPage < totalPages && <LoadMoreBtn onLoadMore={loadMoreImages} />}
         </>
       )}
       {loading && (
         <div className="loader-container">
-          <DNA
-            visible={true}
-            height="180"
-            width="180"
-            ariaLabel="dna-loading"
-            wrapperStyle={{}}
-            wrapperClass="dna-wrapper"
-          />
+          <DNA visible={true} height="180" width="180" ariaLabel="dna-loading" />
         </div>
       )}
       {error && <ErrorMessage error={error} />}
