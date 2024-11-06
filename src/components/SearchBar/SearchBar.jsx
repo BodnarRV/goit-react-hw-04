@@ -2,21 +2,18 @@ import React from "react";
 import "./SearchBar.css";
 import toast, { Toaster } from "react-hot-toast";
 
-export default function SearchBar({ onSearch, onQuerySet }) {
+export default function SearchBar({ onQuerySet }) {
   const notify = () =>
     toast.error("Please enter text to search for images.", { duration: 3000 });
 
-  const handleInputChange = (e) => {
-    onQuerySet(e.target.value);
-  };
-
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (e.target.elements.query.value.trim() === "") {
+    const query = e.target.elements.query.value.trim();
+    if (query === "") {
       notify();
       return;
     }
-    onSearch(e);
+    onQuerySet(query);
   };
 
   return (
@@ -34,7 +31,6 @@ export default function SearchBar({ onSearch, onQuerySet }) {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            onChange={handleInputChange}
           />
         </form>
       </header>
