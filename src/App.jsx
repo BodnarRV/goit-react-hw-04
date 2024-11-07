@@ -44,9 +44,12 @@ function App() {
     getImages();
   }, [query, currentPage]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setCurrentPage(1);
+  const handleSearch = (newQuery) => {
+    if (newQuery !== query) {
+      setQuery(newQuery);
+      setImages([]);
+      setCurrentPage(1);
+    }
   };
 
   const loadMoreImages = () => {
@@ -65,7 +68,7 @@ function App() {
 
   return (
     <>
-      <SearchBar onSearch={handleSearch} onQuerySet={setQuery} />
+      <SearchBar onQuerySet={handleSearch} />
       {images.length > 0 && (
         <>
           <ImageGallery images={images} onImageClick={openModal} />
